@@ -21,6 +21,7 @@
     "postinstall": ""
   },
   "dependencies": {
+    "iconv-lite": "^0.4.23",
     "iview": "^2.14.3",
     "less": "^3.5.3",
     "less-loader": "^4.1.0",
