@@ -69,15 +69,19 @@
     import BuildRunning from './component/BuildRunning'
     import BuildResult from './component/BuildResult'
 
+    import moment from 'moment'
+
     export default {
         name: 'ks-package-builder',
         data() {
             return {
                 options: {
-                    rootPath: 'D:\\KWM',
+                    currentDate: moment().format('YYYY-MM-DD'),
+                    rootPath: 'C:\\Users\\dell\\Desktop\\kwm系统构建平台',
                     version: '4.0',
                     publisher: 'Knowlesys Inc.',
                     url: 'http://www.knowlesys.cn/',
+                    compress: 'zip',
                     mysqlBaseDir: 'D:\\KWM\\Base\\MySQL',
                     mysqlDataDir: 'D:\\KWM\\Database_Server\\Data',
                     mysqlMemoryPoolSize: 1,
@@ -119,6 +123,31 @@
         height: 100vh;
         overflow: hidden;
 
+        pre, code {
+            font-size: 12px;
+        }
+
+        .padding {
+            &-top-16 {
+                padding-top: 16px;
+            }
+            &-top-32 {
+                padding-top: 32px;
+            }
+        }
+
+        .margin {
+            &-top-16 {
+                margin-top: 16px;
+            }
+            &-top-32 {
+                margin-top: 32px;
+            }
+        }
+
+
+
+
         & .ks-left {
             height: 100vh;
             overflow: auto;
@@ -129,17 +158,16 @@
         & .ks-right {
             flex: 1;
             height: 100vh;
-
+            overflow: auto;
             display: flex;
             flex-direction: column;
 
             & .content {
                 overflow: auto;
                 flex: 1;
-                padding: 16px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
+                padding: 0 16px;
+                background-color: #f0f0f0;
+
             }
             & .action {
                 padding: 16px;
@@ -153,5 +181,7 @@
                 }
             }
         }
+
+
     }
 </style>
