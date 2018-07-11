@@ -11,24 +11,42 @@
                     </i-col>
                 </row>
             </form-item>
-            <form-item label="版本">
-                <i-input type="text" v-model="options.version" placeholder="3.0"></i-input>
+
+            <form-item label="数据库 IP">
+                <i-input  placeholder="D:\KWM\Base\MySQL"
+                          v-model="options.dbIP"></i-input>
             </form-item>
-            <form-item label="厂商">
-                <i-input type="text" v-model="options.publisher" placeholder="Knowlesys Inc."></i-input>
-            </form-item>
-            <form-item label="URL">
-                <i-input type="text" v-model="options.url" placeholder="http://www.knowlesys.cn/"></i-input>
-            </form-item>
-            <form-item label="打包压缩算法">
-                <!--<i-input type="text" v-model="options.compress" placeholder="http://www.knowlesys.cn/"></i-input>-->
-                <i-select v-model="options.compress">
-                   <i-option v-for="(algorithm, key) in compressAlgorithms"
-                             :key="key"
-                             :value="algorithm.value"
-                             :label="algorithm.label"></i-option>
-                </i-select>
-            </form-item>
+
+            <row :gutter="16">
+                <i-col :span="12">
+                    <form-item label="版本">
+                        <i-input type="text" v-model="options.version" placeholder="3.0"></i-input>
+                    </form-item>
+                </i-col>
+                <i-col :span="12">
+                    <form-item label="厂商">
+                        <i-input type="text" v-model="options.publisher" placeholder="Knowlesys Inc."></i-input>
+                    </form-item>
+                </i-col>
+            </row>
+
+            <row :gutter="16">
+                <i-col :span="12">
+                    <form-item label="URL">
+                        <i-input type="text" v-model="options.url" placeholder="http://www.knowlesys.cn/"></i-input>
+                    </form-item>
+                </i-col>
+                <i-col :span="12">
+                    <form-item label="打包压缩算法">
+                        <i-select v-model="options.compress">
+                            <i-option v-for="(algorithm, key) in compressAlgorithms"
+                                      :key="key"
+                                      :value="algorithm.value"
+                                      :label="algorithm.label"></i-option>
+                        </i-select>
+                    </form-item>
+                </i-col>
+            </row>
         </i-form>
     </card>
 </template>

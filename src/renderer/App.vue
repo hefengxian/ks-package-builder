@@ -31,7 +31,7 @@
         <div class="ks-right">
             <div class="content">
                 <component :is="steps[currentKey]" :options="options"></component>
-                <!--<BuildRootPath v-if="currentKey === 0" :options.sync="options"/>
+                <!-- <BuildCommon v-if="currentKey === 0" :options.sync="options"/>
                 <BuildInput v-if="currentKey === 1" :options.sync="options"/>
                 <BuildDatabase v-if="currentKey === 2" :options.sync="options"/>
                 <BuildAnalysis v-if="currentKey === 3" :options.sync="options"/>
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-    import BuildRootPath from './component/BuildRootPath'
+    import BuildCommon from './component/BuildCommon'
     import BuildInput from './component/BuildInput'
     import BuildDatabase from './component/BuildDatabase'
     import BuildAnalysis from './component/BuildAnalysis'
@@ -85,11 +85,13 @@
                     mysqlBaseDir: 'D:\\KWM\\Base\\MySQL',
                     mysqlDataDir: 'D:\\KWM\\Database_Server\\Data',
                     mysqlMemoryPoolSize: 1,
-                    analysisDBIP: '192.168.1.116',
+                    dbIP: '192.168.1.116',
                     solrDataDir: 'D:\\KWM\\Analysis_Server\\Solr_Data',
+                    appServerAddress: '/kwm/server/',
+                    appCloudAddress: '/kwmcloud/',
                 },
                 steps: [
-                    BuildRootPath,
+                    BuildCommon,
                     BuildInput,
                     BuildDatabase,
                     BuildAnalysis,
@@ -102,7 +104,7 @@
             }
         },
         components: {
-            BuildRootPath,
+            BuildCommon,
             BuildInput,
             BuildDatabase,
             BuildAnalysis,
