@@ -45,31 +45,21 @@
         },
         beforeDestroy() {
             // 销毁组件之前保存文件
-            /*let destIssFile = path.join(this.options.rootPath, 'Current_Database_Server_x64.iss')
+            let destIssFile = path.join(this.options.rootPath, this.options.ISS_SUB_PATH, `Analysis_Server_x64.iss`)
             let issContent = this.$refs['iss'].$el.innerText
             fs.writeFile(destIssFile, issContent, e => {
                 if (e) {
                     this.$Notice.error({title: e})
                 } else {
-                    this.$Notice.info({title: 'Current_Database_Server_x64.iss 文件保存成功'})
+                    this.$Notice.info({title: 'Analysis.iss 文件保存成功'})
                 }
             })
-
-            let destIniFile = path.join(this.options.rootPath, '输入/KWM/Base/MySQL/my.ini')
-            let iniContent = this.$refs['ini'].$el.innerText
-            fs.writeFile(destIniFile, iniContent, e => {
-                if (e) {
-                    this.$Notice.error({title: e})
-                } else {
-                    this.$Notice.info({title: 'my.ini 文件保存成功'})
-                }
-            })*/
         },
         methods: {
             openDir(type) {
                 let fullPath
                 if (type === 'iss') {
-                    fullPath = path.join(this.options.rootPath)
+                    fullPath = path.join(this.options.rootPath, this.options.ISS_SUB_PATH)
                 } else {
                     fullPath = path.join(this.options.rootPath, '')
                 }

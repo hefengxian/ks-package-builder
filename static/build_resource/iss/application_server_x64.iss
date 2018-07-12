@@ -1,4 +1,4 @@
-[Setup]
+﻿[Setup]
 ; 使用管理员运行
 ; PrivilegesRequired=admin
 PrivilegesRequired=poweruser
@@ -67,24 +67,15 @@ Name: "cn_simplify"; MessagesFile: "{{rootPath}}\构建程序\Tool\ChineseSimp-1
 [Files]
 ; MSVC2017_redist.exe
 Source: "Base\Other\VC2017_redist.x64.exe"; DestDir: "{app}\..\Base\Other"; Flags: onlyifdoesntexist
-; JDK 1.8
-Source: "Base\JDK\*"; DestDir: "{app}\..\Base\JDK"; Flags: recursesubdirs createallsubdirs ignoreversion
-; Tomcat 9
-Source: "Base\Tomcat\*"; DestDir: "{app}\..\Base\Tomcat"; Flags: recursesubdirs createallsubdirs ignoreversion onlyifdoesntexist
 ; Apache 2.4
 Source: "Base\Apache\*"; DestDir: "{app}\..\Base\Apache"; Flags: recursesubdirs createallsubdirs ignoreversion onlyifdoesntexist
 ; PHP 7.2
 Source: "Base\PHP\*"; DestDir: "{app}\..\Base\PHP"; Flags: recursesubdirs createallsubdirs ignoreversion onlyifdoesntexist
-; Python 3.7
-Source: "Base\Python\*"; DestDir: "{app}\..\Base\Python"; Flags: recursesubdirs createallsubdirs ignoreversion onlyifdoesntexist
 ; 分类程序、热词统计程序
 Source: "Application_Server\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
 ; 需要的批处理
-Source: "Base\Init\JDK*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesntexist
-Source: "Base\Init\Tomcat*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesntexist
 Source: "Base\Init\PHP*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesntexist
 Source: "Base\Init\Apache*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesntexist
-Source: "Base\Init\Python*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesntexist
 Source: "Base\Init\Application*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesntexist
 
 
@@ -131,8 +122,8 @@ end;
 ; 安装 MSVC 2017
 Filename: "{app}\..\Base\Other\VC2017_redist.x64.exe"; Flags: runascurrentuser; Check: NeedsMSVCInstall('SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64');
 ; 初始化分析服务器，安装各种依赖的服务添加 Path 变量等
-Filename: "{app}\..\Base\Init\Application_Init.bat"; Flags: runascurrentuser;
+Filename: "{app}\..\Base\Init\Application_Server_Init.bat"; Flags: runascurrentuser;
 
 [UninstallRun]
-; Filename: "{app}\..\Base\Init\Application_Init.bat"; Flags: runascurrentuser;
+; Filename: "{app}\..\Base\Init\Application_Server_Init.bat"; Flags: runascurrentuser;
 

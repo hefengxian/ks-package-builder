@@ -131,8 +131,8 @@ end;
 ; 安装 MSVC 2017
 Filename: "{app}\..\Base\Other\VC2017_redist.x64.exe"; Flags: runascurrentuser; Check: NeedsMSVCInstall('SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64');
 ; 初始化分析服务器，安装各种依赖的服务添加 Path 变量等
-Filename: "{app}\..\Base\Init\Analysis_Init.bat"; Flags: runascurrentuser;
+Filename: "{app}\..\Base\Init\Analysis_Server_Init.bat"; Flags: runascurrentuser;
 
 [UninstallRun]
-; Filename: "{app}\..\Base\Init\Analysis_Init.bat"; Flags: runascurrentuser;
+; Filename: "{app}\..\Base\Init\Analysis_Server_Init.bat"; Flags: runascurrentuser;
 

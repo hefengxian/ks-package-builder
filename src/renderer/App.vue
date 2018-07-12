@@ -1,36 +1,22 @@
 <template>
     <div id="app">
         <div class="ks-left">
-            <Steps :current="currentKey" direction="vertical">
-                <Step title="构建目录"
-                      icon="folder"
-                      content="构建项目的根目录，公用配置"></Step>
-                <Step title="生成输入文件"
-                      icon="filing"
-                      content="准备输入的各种文件"></Step>
-                <Step title="配置数据库服务器"
-                      icon="soup-can"
-                      content="数据库服务器配置"></Step>
-                <Step title="配置分析服务器"
-                      icon="ios-pulse"
-                      content="分析服务器配置"></Step>
-                <Step title="配置应用服务器"
-                      icon="monitor"
-                      content="应用服务器配置"></Step>
-                <Step title="配置应 Fetch 服务器"
-                      icon="android-download"
-                      content="Fetch 服务器配置"></Step>
-                <Step title="运行构建"
-                      icon="gear-a"
-                      content="运行构建，查看日志"></Step>
-                <Step title="构建结果"
-                      icon="android-apps"
-                      content="查看构建结果"></Step>
+            <Steps :current="currentKey"
+                   direction="vertical">
+                <Step v-for="(step, key) in steps"
+                      class="build-step"
+                      @click.native="stepClick(key)"
+                      :key="key"
+                      :title="step.title"
+                      :icon="step.icon"
+                      :content="step.content"></Step>
             </Steps>
         </div>
         <div class="ks-right">
             <div class="content">
-                <component :is="steps[currentKey]" :options="options"></component>
+                <component :is="stepComponents[currentKey]"
+                           :logs="logs"
+                           :options="options"></component>
                 <!-- <BuildCommon v-if="currentKey === 0" :options.sync="options"/>
                 <BuildInput v-if="currentKey === 1" :options.sync="options"/>
                 <BuildDatabase v-if="currentKey === 2" :options.sync="options"/>
@@ -44,15 +30,19 @@
                 <div class="action-left">
                     <Button type="primary"
                             :disabled="currentKey < 1"
-                            @click="currentKey--">上一步</Button>
+                            @click="currentKey--">上一步
+                    </Button>
                     <Button type="primary"
                             :disabled="currentKey >= steps.length - 1"
-                            @click="currentKey++">下一步</Button>
+                            @click="currentKey++">下一步
+                    </Button>
                 </div>
                 <div class="action-right">
                     <Button :disabled="currentKey !== 6"
                             v-if="currentKey < 7"
-                            icon="play" type="success">开始构建</Button>
+                            @click="runBuild"
+                            icon="play" type="success">开始构建
+                    </Button>
                 </div>
             </div>
         </div>
@@ -60,6 +50,13 @@
 </template>
 
 <script>
+    import fs from 'fs'
+    import path from 'path'
+    import {shell} from 'electron'
+    import {spawn, exec} from 'child_process'
+    import iconv from 'iconv-lite'
+    import moment from 'moment'
+
     import BuildCommon from './component/BuildCommon'
     import BuildInput from './component/BuildInput'
     import BuildDatabase from './component/BuildDatabase'
@@ -69,13 +66,17 @@
     import BuildRunning from './component/BuildRunning'
     import BuildResult from './component/BuildResult'
 
-    import moment from 'moment'
+    const LS_KEY = 'options_store_key'
+    iconv.skipDecodeWarning = true
+    const FORMAT = 'YYYY-MM-DD HH:mm:ss'
 
     export default {
         name: 'ks-package-builder',
         data() {
-            return {
-                options: {
+            let options = JSON.parse(localStorage.getItem(LS_KEY))
+            if (options === null) {
+                options = {
+                    ISS_SUB_PATH: '构建程序\\Iss\\Dev\\',
                     currentDate: moment().format('YYYY-MM-DD'),
                     rootPath: 'C:\\Users\\dell\\Desktop\\kwm系统构建平台',
                     version: '4.0',
@@ -89,8 +90,14 @@
                     solrDataDir: 'D:\\KWM\\Analysis_Server\\Solr_Data',
                     appServerAddress: '/kwm/server/',
                     appCloudAddress: '/kwmcloud/',
-                },
-                steps: [
+                    logs: [],
+                }
+            }
+
+            return {
+                options,
+                logs: [],
+                stepComponents: [
                     BuildCommon,
                     BuildInput,
                     BuildDatabase,
@@ -100,7 +107,60 @@
                     BuildRunning,
                     BuildResult,
                 ],
+                steps: [
+                    {
+                        title: '构建目录',
+                        icon: 'folder',
+                        content: '构建项目的根目录，公用配置',
+                    },
+                    {
+                        title: '生成输入文件',
+                        icon: 'filing',
+                        content: '准备输入的各种文件',
+                    },
+                    {
+                        title: '配置数据库服务器',
+                        icon: 'soup-can',
+                        content: '数据库服务器配置',
+                    },
+                    {
+                        title: '配置分析服务器',
+                        icon: 'ios-pulse',
+                        content: '分析服务器配置',
+                    },
+                    {
+                        title: '配置应用服务器',
+                        icon: 'monitor',
+                        content: '应用服务器配置',
+                    },
+                    {
+                        title: '配置应 Fetch 服务器',
+                        icon: 'android-download',
+                        content: 'Fetch 服务器配置',
+                    },
+                    {
+                        title: '运行构建',
+                        icon: 'gear-a',
+                        content: '运行构建，查看日志',
+                    },
+                    {
+                        title: '构建结果',
+                        icon: 'android-apps',
+                        content: '查看构建结果',
+                    },
+                ],
                 currentKey: 0,
+            }
+        },
+
+        watch: {
+            options: {
+                handler(newVal, oldVal) {
+                    // console.log('options has change: ', oldVal, newVal)
+                    localStorage.setItem(LS_KEY, JSON.stringify(newVal))
+                },
+                deep: true,
+                // immediate: true,
             }
         },
         components: {
@@ -113,8 +173,31 @@
             BuildRunning,
             BuildResult,
         },
+        mounted() {
+            // console.dir(document.querySelector('#app'))
+        },
         methods: {
+            stepClick(key) {
+                this.currentKey = key
+            },
+            runBuild() {
+                let cmd = `"C:\\Program Files (x86)\\Inno Setup 5\\ISCC.exe" C:\\Users\\dell\\Desktop\\kwm系统构建平台\\构建程序\\Iss\\Dev\\Analysis_Server_x64.iss`
+                let ls = exec(cmd, {encoding: 'binary'})
 
+                // 正常输出
+                ls.stdout.on('data', data => {
+                    data = iconv.decode(data, 'gbk').trim()
+                    if (data.trim() !== '') {
+                        this.logs.push(`[${moment().format(FORMAT)}] ${data}`)
+                    }
+                });
+
+                // 错误信息
+                ls.stderr.on('data', data => {
+                    data = iconv.decode(data, 'gbk').trim()
+                    this.logs.push(`[${moment().format(FORMAT)}] ${data}`)
+                })
+            }
         },
     }
 </script>
@@ -147,15 +230,19 @@
             }
         }
 
-
-
-
         & .ks-left {
             height: 100vh;
             overflow: auto;
             padding: 16px;
             max-width: 280px;
             border-right: 1px solid #f0f0f0;
+
+            & .build-step {
+                cursor: pointer;
+                /*&:hover {
+                    color: #f00!important;
+                }*/
+            }
         }
         & .ks-right {
             flex: 1;
@@ -183,7 +270,6 @@
                 }
             }
         }
-
 
     }
 </style>

@@ -1,24 +1,30 @@
 <template>
-    <div>
-        build-running
-    </div>
+    <card dis-hover :bordered="false">
+        <pre id="logs"
+             style="overflow: auto;"
+             ref="logs">{{logStr}}</pre>
+    </card>
 </template>
 
 <script>
     export default {
         name: "build-running",
         props: {
-            options: {
-                type: Object,
-                required: true,
-                default() {
-                    return {}
-                }
+            logs: {
+                type: Array
+            }
+        },
+        computed: {
+            logStr() {
+                this.$nextTick(() => {
+                    document.querySelector(".content").scrollTop = document.querySelector("#logs").scrollHeight
+                })
+                return this.logs.join('\n')
             }
         },
     }
 </script>
 
-<style scoped>
+<style>
 
 </style>

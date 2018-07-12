@@ -72,14 +72,16 @@ Name: "cn_simplify"; MessagesFile: "{{rootPath}}\构建程序\Tool\ChineseSimp-1
 Source: "Base\MySQL\*"; DestDir: "{app}\..\Base\MySQL"; Flags: recursesubdirs createallsubdirs ignoreversion
 ; MSVC2017_redist.exe
 Source: "Base\Other\VC2017_redist.x64.exe"; DestDir: "{app}\..\Base\Other";
+; MySQL 初始化文件
+Source: "Database_Server\*"; DestDir: "{app}"; Excludes: "Data\*"; Flags: recursesubdirs createallsubdirs ignoreversion
+; MySQL Data 初始化文件
+Source: "Database_Server\Data\*"; DestDir: "{{mysqlDataDir}}"; Flags: recursesubdirs createallsubdirs ignoreversion
 ; 初始化 MySQL 的批处理
 Source: "Base\Init\MySQL*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesntexist
 ; 初始化 PHP 的批处理
 Source: "Base\Init\PHP*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesntexist
-; MySQL 初始化文件
-Source: "Database_Server\*"; DestDir: "{app}"; Excludes: "Data\*"; Flags: recursesubdirs createallsubdirs ignoreversion
-; MySQL Data 初始化文件
-Source: "Database_Server\Data\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
+; 初始化 Db Server
+Source: "Base\Init\Database*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesntexist
 
 ; 创建目录
 [Dirs]
@@ -120,7 +122,7 @@ end;
 ; 安装 MSVC 2017
 Filename: "{app}\..\Base\Other\VC2017_redist.x64.exe"; Flags: runascurrentuser; Check: NeedsMSVCInstall('SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64');
 ; 初始化数据库服务器，安装各种依赖的服务添加 Path 变量等
-Filename: "{app}\..\Base\Init\Database_Init.bat"; Flags: runascurrentuser;
+Filename: "{app}\..\Base\Init\Database_Server_Init.bat"; Flags: runascurrentuser;
 
 [UninstallRun]
-; Filename: "{app}\..\Base\Init\Database_Uninstall.bat"; Flags: runascurrentuser;
+; Filename: "{app}\..\Base\Init\Database_Server_Uninstall.bat"; Flags: runascurrentuser;

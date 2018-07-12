@@ -72,10 +72,11 @@
             let content = this.$refs['bat'].$el.innerText
             content = content.replace(/\r?\n/g, '\r\n')
             // content = iconv.decode(new Buffer(content), 'ANSI', {stripBOM: false})
+            // 批处理里使用中文的话必须是 GBK 格式，可以使用 cp936 或者 GBK
             content = iconv.encode(content, 'cp936')
             let dest = "C:\\Users\\dell\\Desktop\\kwm系统构建平台\\test_gen.bat"
             fs.writeFile(dest, content, e => {
-                console.log(e)
+                // console.log(e)
             })
         },
     }
