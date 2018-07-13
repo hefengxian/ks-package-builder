@@ -76,9 +76,9 @@
             let options = JSON.parse(localStorage.getItem(LS_KEY))
             if (options === null) {
                 options = {
-                    ISS_SUB_PATH: '构建程序\\Iss\\Dev\\',
+                    ISS_SUB_PATH: 'Build\\Iss\\',
                     currentDate: moment().format('YYYY-MM-DD'),
-                    rootPath: 'C:\\Users\\dell\\Desktop\\kwm系统构建平台',
+                    rootPath: 'C:\\Users\\dell\\Desktop\\KWM_Build_Platform',
                     version: '4.0',
                     publisher: 'Knowlesys Inc.',
                     url: 'http://www.knowlesys.cn/',
@@ -90,7 +90,6 @@
                     solrDataDir: 'D:\\KWM\\Analysis_Server\\Solr_Data',
                     appServerAddress: '/kwm/server/',
                     appCloudAddress: '/kwmcloud/',
-                    logs: [],
                 }
             }
 
@@ -178,24 +177,46 @@
         },
         methods: {
             stepClick(key) {
-                this.currentKey = key
+                if (key < this.currentKey) {
+                    this.currentKey = key
+                } else if (key === this.currentKey + 1) {
+                    this.currentKey = key
+                }
             },
             runBuild() {
-                let cmd = `"C:\\Program Files (x86)\\Inno Setup 5\\ISCC.exe" C:\\Users\\dell\\Desktop\\kwm系统构建平台\\构建程序\\Iss\\Dev\\Analysis_Server_x64.iss`
-                let ls = exec(cmd, {encoding: 'binary'})
+
+                let tasks = [
+                    {
+
+                    }
+                ]
+
+                let cmd = `"${path.join(this.options.rootPath, 'Build\\Bin\\InnoSetup\\ISCC.exe')}" ${path.join(this.options.rootPath, 'Build\\Iss\\Analysis_Server_x64.iss')}`
+                this.logs.push(`执行：${cmd}`)
+                let ls = exec(cmd, {encoding: 'binary', maxBuffer: Infinity})
 
                 // 正常输出
                 ls.stdout.on('data', data => {
-                    data = iconv.decode(data, 'gbk').trim()
-                    if (data.trim() !== '') {
-                        this.logs.push(`[${moment().format(FORMAT)}] ${data}`)
-                    }
+                    data = iconv.decode(data, 'gbk')// .trim()
+                    let lines = data.split(/[\n\r\n]/g)
+                    // this.logs.push(`[${moment().format(FORMAT)}] ${data}`)
+                    lines.forEach((line, k) => {
+                        if (line.trim() !== '') {
+                            this.logs.push(line)
+                        }
+                    })
+
                 });
 
                 // 错误信息
                 ls.stderr.on('data', data => {
                     data = iconv.decode(data, 'gbk').trim()
-                    this.logs.push(`[${moment().format(FORMAT)}] ${data}`)
+                    this.logs.push(`${data}`)
+                })
+
+                // child_process 进程关闭
+                ls.on('close', (code, signal) => {
+                    this.logs.push('打包完成！')
                 })
             }
         },

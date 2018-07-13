@@ -52,10 +52,10 @@ SolidCompression=yes
 ChangesEnvironment=true
 
 ; 打包的输入文件目录
-SourceDir={{rootPath}}\输入\KWM
+SourceDir={{rootPath}}\Input\KWM
 
 ; 打包之后输出文件的目录
-OutputDir={{rootPath}}\输出\{{currentDate}}
+OutputDir={{rootPath}}\Output\{{currentDate}}
 
 
 ; 安装界面多语言配置
@@ -63,7 +63,7 @@ OutputDir={{rootPath}}\输出\{{currentDate}}
 ; 英语配置
 Name: "en"; MessagesFile: "compiler:Default.isl"
 ; 简体中文配置
-Name: "cn_simplify"; MessagesFile: "{{rootPath}}\构建程序\Tool\ChineseSimp-11-5.1.0.isl"
+Name: "cn_simplify"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
 
 
 ; 文件映射

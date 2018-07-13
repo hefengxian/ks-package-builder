@@ -86,7 +86,7 @@
                 }
             })
 
-            let destIniFile = path.join(this.options.rootPath, '输入/KWM/Base/MySQL/my.ini')
+            let destIniFile = path.join(this.options.rootPath, 'Input/KWM/Base/MySQL/my.ini')
             let iniContent = this.$refs['ini'].$el.innerText
             fs.writeFile(destIniFile, iniContent, e => {
                 if (e) {
@@ -102,7 +102,7 @@
                 if (type === 'iss') {
                     fullPath = path.join(this.options.rootPath, this.options.ISS_SUB_PATH)
                 } else {
-                    fullPath = path.join(this.options.rootPath, '输入/KWM/Base/MySQL/')
+                    fullPath = path.join(this.options.rootPath, 'Input/KWM/Base/MySQL/')
                 }
                 shell.openItem(fullPath)
             }
