@@ -5,12 +5,20 @@
           :bordered="false">
         <div style="display: flex; flex-direction: row;">
             <div style="padding: 8px; flex: 0 0 200px;">
-                <Timeline>
-                    <TimelineItem color="green">发布1.0版本</TimelineItem>
-                    <TimelineItem color="green">发布2.0版本</TimelineItem>
-                    <TimelineItem color="red">严重故障</TimelineItem>
-                    <TimelineItem color="blue">发布3.0版本</TimelineItem>
-                </Timeline>
+                <!--<timeline>
+                    <timeline-item v-for="(task, key) in data.runTasks"
+                                   :key="key"
+                                   :color="task.status">{{task.title}}</timeline-item>
+                </timeline>-->
+                <Steps :current="data.currentTaskKey"
+                       direction="vertical">
+                    <Step v-for="(task, key) in data.runTasks"
+                          :key="key"
+                          :status="task.status"
+                          :title="task.title"
+                          :icon="task.icon"
+                          :content="task.desc"></Step>
+                </Steps>
             </div>
             <div class="logs">
                 <virtual-list :size="18"
@@ -31,41 +39,18 @@
     export default {
         name: "build-running",
         props: {
-            logs: {
-                type: Array
+            data: {
+                type: Object
             }
         },
         data() {
             return {
-                tasks: [
-                    {
-                        name: '数据库服务器',
-                        icon: '',
-                        iss: '',
-                        status: '',
-                    },
-                    {
-                        name: '分析服务器',
-                        icon: '',
-                        iss: '',
-                        status: '',
-                    },
-                    {
-                        name: '应用服务器',
-                        icon: '',
-                        iss: '',
-                        status: '',
-                    },
-                    {
-                        name: 'Fetch 服务器',
-                        icon: '',
-                        iss: '',
-                        status: '',
-                    },
-                ]
             }
         },
         computed: {
+            logs() {
+                return this.data.logs
+            }
         },
         components: {
             VirtualList

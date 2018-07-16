@@ -6,11 +6,11 @@
             <!--<i-form label-position="top">
                 <form-item label="KWM 服务地址">
                     <i-input placeholder=""
-                             v-model="options.appServerAddress"></i-input>
+                             v-model="data.options.appServerAddress"></i-input>
                 </form-item>
                 <form-item label="KWM Cloud 地址">
                     <i-input placeholder=""
-                             v-model="options.appCloudAddress"></i-input>
+                             v-model="data.options.appCloudAddress"></i-input>
                 </form-item>
             </i-form>-->
         </card>
@@ -24,7 +24,7 @@
             </div>
             <div style="height: 280px; overflow: auto">
                 <iss-template ref="iss"
-                              :data="options"
+                              :data="data.options"
                               style="width: 0;"/>
             </div>
         </card>
@@ -39,7 +39,7 @@
     export default {
         name: "build-analysis",
         props: {
-            options: {
+            data: {
                 type: Object,
                 required: true,
                 default() {
@@ -49,7 +49,7 @@
         },
         beforeDestroy() {
             // 销毁组件之前保存文件
-            let destIssFile = path.join(this.options.rootPath, this.options.ISS_SUB_PATH, `Fetch_Server_x64.iss`)
+            let destIssFile = path.join(this.data.options.rootPath, this.data.options.ISS_SUB_PATH, `Fetch_Server_x64.iss`)
             let issContent = this.$refs['iss'].$el.innerText
             fs.writeFile(destIssFile, issContent, e => {
                 if (e) {
@@ -63,9 +63,9 @@
             openDir(type) {
                 let fullPath
                 if (type === 'iss') {
-                    fullPath = path.join(this.options.rootPath, this.options.ISS_SUB_PATH)
+                    fullPath = path.join(this.data.options.rootPath, this.data.options.ISS_SUB_PATH)
                 } else {
-                    fullPath = path.join(this.options.rootPath, '')
+                    fullPath = path.join(this.data.options.rootPath, '')
                 }
                 shell.openItem(fullPath)
             }

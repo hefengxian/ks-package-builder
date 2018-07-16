@@ -15,8 +15,7 @@
         <div class="ks-right">
             <div class="content">
                 <component :is="stepComponents[currentKey]"
-                           :logs="logs"
-                           :options="options"></component>
+                           :data.sync="$data"></component>
                 <!-- <BuildCommon v-if="currentKey === 0" :options.sync="options"/>
                 <BuildInput v-if="currentKey === 1" :options.sync="options"/>
                 <BuildDatabase v-if="currentKey === 2" :options.sync="options"/>
@@ -41,7 +40,8 @@
                     <Button :disabled="currentKey !== 6"
                             v-if="currentKey < 7"
                             @click="runBuild"
-                            icon="play" type="success">开始构建
+                            icon="play"
+                            type="success">开始构建
                     </Button>
                 </div>
             </div>
@@ -53,7 +53,7 @@
     import fs from 'fs'
     import path from 'path'
     import {shell} from 'electron'
-    import {spawn, exec} from 'child_process'
+    import {spawn, exec, execSync} from 'child_process'
     import iconv from 'iconv-lite'
     import moment from 'moment'
 
@@ -149,13 +149,44 @@
                     },
                 ],
                 currentKey: 0,
+                currentTaskKey: 0,
+                runTasks: [
+                    {
+                        title: '数据库服务器',
+                        desc: '等待构建',
+                        icon: 'soup-can',
+                        status: 'wait',
+                        iss: 'Database_Server_x64.iss',
+                    },
+                    {
+                        title: '分析服务器',
+                        desc: '等待构建',
+                        icon: 'ios-pulse',
+                        status: 'wait',
+                        iss: 'Analysis_Server_x64.iss',
+                    },
+                    {
+                        title: '应用服务器',
+                        desc: '等待构建',
+                        icon: 'monitor',
+                        status: 'wait',
+                        iss: 'Application_Server_x64.iss',
+                    },
+                    {
+                        title: 'Fetch 服务器',
+                        desc: '等待构建',
+                        icon: 'android-download',
+                        status: 'wait',
+                        iss: 'Fetch_Server_x64.iss',
+                    },
+                ],
             }
         },
 
         watch: {
             options: {
                 handler(newVal, oldVal) {
-                    // console.log('options has change: ', oldVal, newVal)
+                    // console.log('data.options has change: ', oldVal, newVal)
                     localStorage.setItem(LS_KEY, JSON.stringify(newVal))
                 },
                 deep: true,
@@ -185,38 +216,47 @@
             },
             runBuild() {
 
-                let tasks = [
-                    {
+                this.runTasks.forEach((v, k) => {
+                    let isccPath = path.join(this.options.rootPath, 'Build\\Bin\\InnoSetup\\ISCC.exe')
+                    let issPath = path.join(this.options.rootPath, 'Build\\Iss', v.iss)
+                    let cmd = `"${isccPath}" ${issPath}`
 
-                    }
-                ]
+                    this.currentTaskKey = k
+                    this.runTasks[k].desc = '构建中...'
+                    this.runTasks[k].status = 'process'
+                    
+                    this.logs.push(`=============== 开始执行：${cmd}`)
+                    let ls = exec(cmd, {encoding: 'binary', maxBuffer: Infinity})
 
-                let cmd = `"${path.join(this.options.rootPath, 'Build\\Bin\\InnoSetup\\ISCC.exe')}" ${path.join(this.options.rootPath, 'Build\\Iss\\Analysis_Server_x64.iss')}`
-                this.logs.push(`执行：${cmd}`)
-                let ls = exec(cmd, {encoding: 'binary', maxBuffer: Infinity})
+                    // 正常输出
+                    ls.stdout.on('data', data => {
+                        data = iconv.decode(data, 'gbk')// .trim()
+                        let lines = data.split(/[\n\r\n]/g)
+                        // this.logs.push(`[${moment().format(FORMAT)}] ${data}`)
+                        lines.forEach((line, k) => {
+                            if (line.trim() !== '') {
+                                this.logs.push(line)
+                            }
+                        })
+                    });
 
-                // 正常输出
-                ls.stdout.on('data', data => {
-                    data = iconv.decode(data, 'gbk')// .trim()
-                    let lines = data.split(/[\n\r\n]/g)
-                    // this.logs.push(`[${moment().format(FORMAT)}] ${data}`)
-                    lines.forEach((line, k) => {
-                        if (line.trim() !== '') {
-                            this.logs.push(line)
-                        }
+                    // 错误信息
+                    ls.stderr.on('data', data => {
+                        this.runTasks[k].desc = '构建失败'
+                        this.runTasks[k].status = 'error'
+                        data = iconv.decode(data, 'gbk').trim()
+                        this.logs.push(`${data}`)
                     })
 
-                });
-
-                // 错误信息
-                ls.stderr.on('data', data => {
-                    data = iconv.decode(data, 'gbk').trim()
-                    this.logs.push(`${data}`)
-                })
-
-                // child_process 进程关闭
-                ls.on('close', (code, signal) => {
-                    this.logs.push('打包完成！')
+                    // child_process 进程关闭
+                    ls.on('close', (code, signal) => {
+                        // console.log(code, signal)
+                        if (code === 0) {   // 正常退出
+                            this.runTasks[k].desc = '构建完成'
+                            this.runTasks[k].status = 'finish'
+                            this.logs.push(`=============== ${v.title}打包完成！`)
+                        }
+                    })
                 })
             }
         },
@@ -276,7 +316,7 @@
                 overflow: auto;
                 flex: 1;
                 padding: 0 16px;
-                background-color: #f0f0f0;
+                background-color: #eff3f8;
 
             }
             & .action {

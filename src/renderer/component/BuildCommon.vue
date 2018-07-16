@@ -4,7 +4,7 @@
             <form-item label="构建根目录">
                 <row :gutter="16" type="flex">
                     <i-col style="flex: 1;">
-                        <i-input type="text" v-model="options.rootPath" placeholder="例如：D:\KWM_BUILD_PLATFORM"></i-input>
+                        <i-input type="text" v-model="data.options.rootPath" placeholder="例如：D:\KWM_BUILD_PLATFORM"></i-input>
                     </i-col>
                     <i-col>
                         <i-button type="primary" icon="folder" @click="handleOpenFile">打开</i-button>
@@ -14,18 +14,18 @@
 
             <form-item label="数据库 IP">
                 <i-input  placeholder="D:\KWM\Base\MySQL"
-                          v-model="options.dbIP"></i-input>
+                          v-model="data.options.dbIP"></i-input>
             </form-item>
 
             <row :gutter="16">
                 <i-col :span="12">
                     <form-item label="版本">
-                        <i-input type="text" v-model="options.version" placeholder="3.0"></i-input>
+                        <i-input type="text" v-model="data.options.version" placeholder="3.0"></i-input>
                     </form-item>
                 </i-col>
                 <i-col :span="12">
                     <form-item label="厂商">
-                        <i-input type="text" v-model="options.publisher" placeholder="Knowlesys Inc."></i-input>
+                        <i-input type="text" v-model="data.options.publisher" placeholder="Knowlesys Inc."></i-input>
                     </form-item>
                 </i-col>
             </row>
@@ -33,12 +33,12 @@
             <row :gutter="16">
                 <i-col :span="12">
                     <form-item label="URL">
-                        <i-input type="text" v-model="options.url" placeholder="http://www.knowlesys.cn/"></i-input>
+                        <i-input type="text" v-model="data.options.url" placeholder="http://www.knowlesys.cn/"></i-input>
                     </form-item>
                 </i-col>
                 <i-col :span="12">
                     <form-item label="打包压缩算法">
-                        <i-select v-model="options.compress">
+                        <i-select v-model="data.options.compress">
                             <i-option v-for="(algorithm, key) in compressAlgorithms"
                                       :key="key"
                                       :value="algorithm.value"
@@ -57,7 +57,7 @@
     export default {
         name: "build-root-path",
         props: {
-            options: {
+            data: {
                 type: Object,
                 required: true,
             },
@@ -139,7 +139,7 @@
         methods: {
             handleOpenFile() {
                 let path = remote.dialog.showOpenDialog({properties: ['openFile', 'openDirectory', 'multiSelections']})
-                this.options.rootPath = path[0]
+                this.data.options.rootPath = path[0]
             }
         }
     }

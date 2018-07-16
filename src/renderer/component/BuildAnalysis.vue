@@ -6,7 +6,7 @@
             <i-form label-position="top">
                 <form-item label="Solr Data 目录">
                     <i-input placeholder="D:\KWM\Analysis_Server\Solr_Data"
-                             v-model="options.solrDataDir"></i-input>
+                             v-model="data.options.solrDataDir"></i-input>
                 </form-item>
             </i-form>
         </card>
@@ -20,7 +20,7 @@
             </div>
             <div style="height: 280px; overflow: auto">
                 <iss-template ref="iss"
-                              :data="options"
+                              :data="data.options"
                               style="width: 0;"/>
             </div>
         </card>
@@ -35,7 +35,7 @@
     export default {
         name: "build-analysis",
         props: {
-            options: {
+            data: {
                 type: Object,
                 required: true,
                 default() {
@@ -45,7 +45,7 @@
         },
         beforeDestroy() {
             // 销毁组件之前保存文件
-            let destIssFile = path.join(this.options.rootPath, this.options.ISS_SUB_PATH, `Analysis_Server_x64.iss`)
+            let destIssFile = path.join(this.data.options.rootPath, this.data.options.ISS_SUB_PATH, `Analysis_Server_x64.iss`)
             let issContent = this.$refs['iss'].$el.innerText
             fs.writeFile(destIssFile, issContent, e => {
                 if (e) {
@@ -59,9 +59,9 @@
             openDir(type) {
                 let fullPath
                 if (type === 'iss') {
-                    fullPath = path.join(this.options.rootPath, this.options.ISS_SUB_PATH)
+                    fullPath = path.join(this.data.options.rootPath, this.data.options.ISS_SUB_PATH)
                 } else {
-                    fullPath = path.join(this.options.rootPath, '')
+                    fullPath = path.join(this.data.options.rootPath, '')
                 }
                 shell.openItem(fullPath)
             }

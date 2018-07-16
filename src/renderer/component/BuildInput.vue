@@ -4,7 +4,7 @@
         <i-button type="ghost" @click="runBat">Hello</i-button>
         <pre>{{outputs.join('\n')}}</pre>
         <bat-template ref="bat"
-                      :data="options"
+                      :data="data.options"
                       style="width: 0;"/>
     </card>
 </template>
@@ -23,7 +23,7 @@
     export default {
         name: "build-input",
         props: {
-            options: {
+            data: {
                 type: Object,
                 required: true,
                 default() {
