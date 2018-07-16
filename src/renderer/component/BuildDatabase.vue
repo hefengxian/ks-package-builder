@@ -74,11 +74,34 @@
 
         <div v-show="'data' === currentTab">
             <card dis-hover :bordered="false">
-                <pre style="overflow: auto">mysqldump -h192.168.1.116 -uroot -ppoms@db --set-gtid-purged=OFF mymonitor --tables app_parameter | mysql -h192.168.1.46 -uroot -ppoms@db mymonitor
-mysqldump -h192.168.1.116 -uroot -ppoms@db --set-gtid-purged=OFF mymonitor --tables client -w"Client_ID=24" | mysql -h192.168.1.46 -uroot -ppoms@db mymonitor
-                </pre>
-                <!--<Table border :columns="columns1" :data="data1"></Table>-->
+                <pre style="overflow: auto"><template v-for="table in tables.full">mysqldump -h192.168.1.116 -uroot -ppoms@db --set-gtid-purged=OFF mymonitor --tables {{table.name}} | mysql -h192.168.1.46 -uroot -ppoms@db mymonitor <br /></template></pre>
+                <pre style="overflow: auto"><template v-for="table in tables.part">mysqldump -h192.168.1.116 -uroot -ppoms@db --set-gtid-purged=OFF mymonitor --tables {{table.name}} -w"{{table.where}}" | mysql -h192.168.1.46 -uroot -ppoms@db mymonitor <br /></template></pre>
             </card>
+
+            <row :gutter="16">
+                <i-col :span="12">
+                    <card dis-hover
+                          class="margin-top-16"
+                          :bordered="false">
+                        <strong slot="title">全数据表</strong>
+                        <div slot="extra">
+                            <a @click="openDir('iss')">打开目录</a>
+                        </div>
+                        <Table size="small" :columns="fullColumns" :data="tables.full"></Table>
+                    </card>
+                </i-col>
+                <i-col :span="12">
+                    <card dis-hover
+                          class="margin-top-16"
+                          :bordered="false">
+                        <strong slot="title">部分数据表</strong>
+                        <div slot="extra">
+                            <a @click="openDir('iss')">打开目录</a>
+                        </div>
+                        <Table size="small" :columns="partColumns" :data="tables.part"></Table>
+                    </card>
+                </i-col>
+            </row>
         </div>
     </div>
 </template>
@@ -87,6 +110,7 @@ mysqldump -h192.168.1.116 -uroot -ppoms@db --set-gtid-purged=OFF mymonitor --tab
     import fs from 'fs'
     import path from 'path'
     import {shell} from 'electron'
+    import tables from '../../../static/build_resource/tables'
 
     export default {
         name: "build-database",
@@ -105,7 +129,23 @@ mysqldump -h192.168.1.116 -uroot -ppoms@db --set-gtid-purged=OFF mymonitor --tab
         data() {
             return {
                 currentTab: 'build',
-
+                tables,
+                fullColumns: [
+                    {
+                        title: 'Table Name',
+                        key: 'name'
+                    },
+                ],
+                partColumns: [
+                    {
+                        title: 'Table Name',
+                        key: 'name'
+                    },
+                    {
+                        title: 'Where',
+                        key: 'where'
+                    },
+                ],
             }
         },
         mounted() {},
