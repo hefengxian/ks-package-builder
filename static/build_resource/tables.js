@@ -5,12 +5,12 @@ export default {
         {
             name: 'app_parameter',
         },
-        {
+        /*{
             name: 'black_list',
         },
         {
             name: 'black_word',
-        },
+        },*/
         {
             name: 'city',
         },
@@ -128,7 +128,7 @@ export default {
             name: 'client',
             where: 'Client_ID=24',
         },
-        {
+        /*{
             name: 'client_black_list',
             where: '',
         },
@@ -139,26 +139,26 @@ export default {
         {
             name: 'client_ui',
             where: '',
-        },
+        },*/
         {
             name: 'client_word_lib',
-            where: '',
+            where: 'Client_ID=24',
         },
-        {
+        /*{
             name: 'subject_category',
             where: '',
-        },
+        },*/
         {
             name: 'users',
-            where: '',
+            where: 'User_ID=1',
         },
         {
             name: 'word',
-            where: '',
+            where: 'Word_Lib_ID IN(SELECT Word_Lib_ID FROM word_lib WHERE Client_ID=24)',
         },
         {
             name: 'word_lib',
-            where: '',
+            where: 'Client_ID=24',
         },
     ]
 }

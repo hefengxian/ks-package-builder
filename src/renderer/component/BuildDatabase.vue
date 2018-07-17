@@ -1,18 +1,12 @@
 <template>
-    <div >
+    <div>
         <card dis-hover :bordered="false">
             <Tabs @on-click="handleTabClick"
                   type="card"
                   :animated="false">
-                <TabPane name="build" label="构建配置" icon="settings">
-                    InnoSetup 构建配置
-                </TabPane>
-                <TabPane name="ddl" label="DDL 生成" icon="wrench">
-                    生成数据库 DDL
-                </TabPane>
-                <TabPane name="data" label="初始数据" icon="hammer">
-                    生成初始数据
-                </TabPane>
+                <TabPane name="build" label="构建配置" icon="settings">InnoSetup 构建配置</TabPane>
+                <TabPane name="data" label="初始数据" icon="hammer">生成初始数据</TabPane>
+                <TabPane name="ddl" label="DDL 生成" icon="wrench">生成数据库 DDL</TabPane>
             </Tabs>
         </card>
 
@@ -32,7 +26,8 @@
                     <form-item label="MySQL Innodb 内存">
                         <InputNumber :min="1"
                                      v-model="data.options.mysqlMemoryPoolSize"
-                                     :step="1"></InputNumber> <span>GB</span>
+                                     :step="1"></InputNumber>
+                        <span>GB</span>
                     </form-item>
                 </i-form>
             </card>
@@ -72,10 +67,59 @@
             </card>
         </div>
 
+        <!-- data -->
         <div v-show="'data' === currentTab">
-            <card dis-hover :bordered="false">
-                <pre style="overflow: auto"><template v-for="table in tables.full">mysqldump -h192.168.1.116 -uroot -ppoms@db --set-gtid-purged=OFF mymonitor --tables {{table.name}} | mysql -h192.168.1.46 -uroot -ppoms@db mymonitor <br /></template></pre>
-                <pre style="overflow: auto"><template v-for="table in tables.part">mysqldump -h192.168.1.116 -uroot -ppoms@db --set-gtid-purged=OFF mymonitor --tables {{table.name}} -w"{{table.where}}" | mysql -h192.168.1.46 -uroot -ppoms@db mymonitor <br /></template></pre>
+            <row :gutter="16" class="margin-top-16">
+                <i-col :span="12">
+                    <card dis-hover :bordered="false">
+                        <i-form label-position="top">
+                            <form-item label="源数据库 IP">
+                                <i-input placeholder="192.168.1.116"
+                                         v-model="data.options.originIP"></i-input>
+                            </form-item>
+                            <form-item label="端口">
+                                <i-input placeholder="3306"
+                                         v-model="data.options.originPort"></i-input>
+                            </form-item>
+                            <form-item label="用户名">
+                                <i-input placeholder="mmt_app"
+                                         v-model="data.options.originUser"></i-input>
+                            </form-item>
+                            <form-item label="密码">
+                                <i-input placeholder="poms@db"
+                                         v-model="data.options.originPassword"></i-input>
+                            </form-item>
+                        </i-form>
+                    </card>
+                </i-col>
+                <i-col :span="12">
+                    <card dis-hover :bordered="false">
+                        <i-form label-position="top">
+                            <form-item label="目标数据库 IP">
+                                <i-input placeholder="192.168.1.116"
+                                         v-model="data.options.destIP"></i-input>
+                            </form-item>
+                            <form-item label="端口">
+                                <i-input placeholder="3306"
+                                         v-model="data.options.destPort"></i-input>
+                            </form-item>
+                            <form-item label="用户名">
+                                <i-input placeholder="mmt_app"
+                                         v-model="data.options.destUser"></i-input>
+                            </form-item>
+                            <form-item label="密码">
+                                <i-input placeholder="poms@db"
+                                         v-model="data.options.destPassword"></i-input>
+                            </form-item>
+                        </i-form>
+                    </card>
+                </i-col>
+            </row>
+
+            <card dis-hover :bordered="false" class="margin-top-16">
+                <strong slot="title">结果</strong>
+                <pre style="overflow: auto"><template v-for="table in tables.full">mysqldump -h{{data.options.originIP}} -P{{data.options.originPort}} -u{{data.options.originUser}} -p{{data.options.originPassword}} --set-gtid-purged=OFF mymonitor --single-transaction --tables {{table.name}} | mysql -h{{data.options.destIP}} -P{{data.options.destPort}} -u{{data.options.destUser}} -p{{data.options.destPassword}} mymonitor <br/></template></pre>
+                <pre style="overflow: auto"><template v-for="table in tables.part">mysqldump -h{{data.options.originIP}} -P{{data.options.originPort}} -u{{data.options.originUser}} -p{{data.options.originPassword}} --set-gtid-purged=OFF mymonitor --single-transaction --tables {{table.name}} -w"{{table.where}}" | mysql -h{{data.options.destIP}} -P{{data.options.destPort}} -u{{data.options.destUser}} -p{{data.options.destPassword}} mymonitor <br/></template></pre>
             </card>
 
             <row :gutter="16">
@@ -85,7 +129,7 @@
                           :bordered="false">
                         <strong slot="title">全数据表</strong>
                         <div slot="extra">
-                            <a @click="openDir('iss')">打开目录</a>
+                            <!--<a @click="openDir('iss')">打开目录</a>-->
                         </div>
                         <Table size="small" :columns="fullColumns" :data="tables.full"></Table>
                     </card>
@@ -96,7 +140,7 @@
                           :bordered="false">
                         <strong slot="title">部分数据表</strong>
                         <div slot="extra">
-                            <a @click="openDir('iss')">打开目录</a>
+                            <!--<a @click="openDir('iss')">打开目录</a>-->
                         </div>
                         <Table size="small" :columns="partColumns" :data="tables.part"></Table>
                     </card>
@@ -148,7 +192,8 @@
                 ],
             }
         },
-        mounted() {},
+        mounted() {
+        },
         beforeDestroy() {
             // 销毁组件之前保存文件
             let destIssFile = path.join(this.data.options.rootPath, this.data.options.ISS_SUB_PATH, 'Database_Server_x64.iss')
@@ -189,12 +234,16 @@
         components: {
             IssTemplate: {
                 props: {data: {type: Object}},
-                data() {return {...this.data}},
+                data() {
+                    return {...this.data}
+                },
                 template: `<pre>${fs.readFileSync(path.join(__static, 'build_resource/iss/database_server_x64.iss')).toString()}</pre>`
             },
             IniTemplate: {
                 props: {data: {type: Object}},
-                data() {return {...this.data}},
+                data() {
+                    return {...this.data}
+                },
                 template: `<pre>${fs.readFileSync(path.join(__static, 'build_resource/my.ini')).toString()}</pre>`
             },
         }

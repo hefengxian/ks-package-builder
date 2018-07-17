@@ -86,6 +86,17 @@
                     mysqlBaseDir: 'D:\\KWM\\Base\\MySQL',
                     mysqlDataDir: 'D:\\KWM\\Database_Server\\Data',
                     mysqlMemoryPoolSize: 1,
+
+                    originIP: '192.168.1.116',
+                    originPort: '3306',
+                    originUser: 'mmt_app',
+                    originPassword: 'poms@db',
+
+                    destIP: '192.168.1.46',
+                    destPort: '3306',
+                    destUser: 'mmt_app',
+                    destPassword: 'poms@db',
+
                     dbIP: '192.168.1.116',
                     solrDataDir: 'D:\\KWM\\Analysis_Server\\Solr_Data',
                     appServerAddress: '/kwm/server/',
