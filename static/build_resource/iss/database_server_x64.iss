@@ -1,6 +1,9 @@
 ﻿; 数据库打包流程
 ; 拷贝文件
 
+; 定义重复使用的变量
+#define EnvironmentKey "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+
 [Setup]
 ; 使用管理员运行
 ; PrivilegesRequired=admin
@@ -83,6 +86,16 @@ Source: "Base\Init\PHP*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesntexis
 ; 初始化 Db Server
 Source: "Base\Init\Database*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesntexist
 
+
+; 注册表修改
+[Registry]
+; setx 设置的字符长度限制比较严格，所以使用注册表添加
+; 添加 MySQL 到 Path 环境变量
+Root: HKLM; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};D:\KWM\Base\MySQL\bin"; Check: NeedsAddPath('D:\KWM\Base\MySQL\bin');
+; 添加 PHP 到 Path 环境变量
+Root: HKLM; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};D:\KWM\Base\PHP"; Check: NeedsAddPath('D:\KWM\Base\PHP');
+
+
 ; 创建目录
 [Dirs]
 ; 创建 MySQL 的数据目录
@@ -91,7 +104,7 @@ Source: "Base\Init\Database*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesn
 ; Pascal 脚本
 [Code]
 const
-  EnvironmentKey = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
+  EnvironmentKey = '{#EnvironmentKey}';
 
 // 检查 MSVC 是否安装，通过注册表中对应的项目来检查
 function NeedsMSVCInstall(Path: String):Boolean;

@@ -1,4 +1,7 @@
-﻿[Setup]
+﻿; 定义重复使用的变量
+#define EnvironmentKey "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+
+[Setup]
 ; 使用管理员运行
 ; PrivilegesRequired=admin
 PrivilegesRequired=poweruser
@@ -81,7 +84,11 @@ Source: "Base\Init\Application*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdo
 
 ; 注册表修改
 [Registry]
-
+; setx 设置的字符长度限制比较严格，所以使用注册表添加
+; 添加 PHP 到 Path 环境变量
+Root: HKLM; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};D:\KWM\Base\PHP"; Check: NeedsAddPath('D:\KWM\Base\PHP');
+; 添加 Apache 到 Path 环境变量
+Root: HKLM; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};D:\KWM\Base\Apache\bin"; Check: NeedsAddPath('D:\KWM\Base\Apache\bin');
 
 ; 创建目录
 [Dirs]
@@ -91,7 +98,7 @@ Source: "Base\Init\Application*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdo
 ; Pascal 脚本
 [Code]
 const
-  EnvironmentKey = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
+  EnvironmentKey = '{#EnvironmentKey}';
 
 // 检查 MSVC 是否安装，通过注册表中对应的项目来检查
 function NeedsMSVCInstall(Path: String):Boolean;

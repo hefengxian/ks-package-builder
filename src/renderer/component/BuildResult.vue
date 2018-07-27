@@ -26,7 +26,10 @@
         methods: {
             openResultDir() {
                 let dir = path.join(this.data.options.rootPath, 'Output', moment().format('YYYY-MM-DD'))
-                shell.openItem(dir)
+                if (!shell.openItem(dir)) {
+                    this.$Message.error(`打开失败，请确保文件夹 '${dir}' 存在`)
+                }
+
             }
         }
     }

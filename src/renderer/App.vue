@@ -77,7 +77,6 @@
             if (options === null) {
                 options = {
                     ISS_SUB_PATH: 'Build\\Iss\\',
-                    currentDate: moment().format('YYYY-MM-DD'),
                     rootPath: 'C:\\Users\\dell\\Desktop\\KWM_Build_Platform',
                     version: '4.0',
                     publisher: 'Knowlesys Inc.',
@@ -105,7 +104,7 @@
             }
 
             return {
-                options,
+                options: {...options, currentDate: moment().format('YYYY-MM-DD'),},
                 logs: [],
                 stepComponents: [
                     BuildCommon,
@@ -144,7 +143,7 @@
                         content: '应用服务器配置',
                     },
                     {
-                        title: '配置应 Fetch 服务器',
+                        title: '配置 Fetch 服务器',
                         icon: 'android-download',
                         content: 'Fetch 服务器配置',
                     },
@@ -256,7 +255,7 @@
                         this.runTasks[k].desc = '构建失败'
                         this.runTasks[k].status = 'error'
                         data = iconv.decode(data, 'gbk').trim()
-                        this.logs.push(`${data}`)
+                        this.logs.push(`>>>>>>>>>>>>>> ${data}`)
                     })
 
                     // child_process 进程关闭
@@ -281,7 +280,31 @@
         overflow: hidden;
 
         pre, code {
+            // font-size: 12px;
+            font-family: Consolas, "Roboto Mono", Monaco, courier, monospace, "PingFang SC", "Hiragino Sans GB","Microsoft YaHei","微软雅黑";
+            background-color: #f8f8f8;
+            color: #525252;
+            white-space: pre;
             font-size: 12px;
+        }
+
+        code {
+            color: #e96900;
+            padding: 3px 5px;
+            margin: 0 2px;
+            border-radius: 2px;
+            white-space: nowrap;
+        }
+
+        pre {
+            padding: 1.2em 1.4em;
+        }
+
+        .markdown-body {
+            box-sizing: border-box;
+            margin: 0 auto;
+            font-size: 12px;
+            font-family: "Helvetica Neue",Helvetica,"PingFang SC", consolas, "Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";;
         }
 
         .padding {
@@ -342,6 +365,5 @@
                 }
             }
         }
-
     }
 </style>

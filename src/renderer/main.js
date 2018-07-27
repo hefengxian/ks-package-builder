@@ -1,4 +1,5 @@
 import 'iview/dist/styles/iview.css'
+import 'github-markdown-css'
 
 import Vue from 'vue'
 

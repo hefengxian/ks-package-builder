@@ -25,7 +25,7 @@
             <div style="height: 280px; overflow: auto">
                 <iss-template ref="iss"
                               :data="data.options"
-                              style="width: 0;"/>
+                              />
             </div>
         </card>
     </div>

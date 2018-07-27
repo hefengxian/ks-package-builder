@@ -65,12 +65,9 @@ export default {
         {
             name: 'operation_object',
         },
-        {
-            name: 'private_word',
-        },
-        {
+        /*{
             name: 'privilege',
-        },
+        },*/
         {
             name: 'province',
         },
@@ -79,6 +76,9 @@ export default {
         },
         {
             name: 'reject_domain_class',
+        },
+        {
+            name: 'reject_junkword',
         },
         {
             name: 'reject_url',
@@ -95,18 +95,18 @@ export default {
         {
             name: 'select_sql',
         },
-        {
+        /*{
             name: 'server_log_file',
-        },
+        },*/
         {
             name: 'service_type',
         },
-        {
+        /*{
             name: 'subject_classify_rule',
         },
         {
             name: 'subject_search_rule',
-        },
+        },*/
         {
             name: 'system_version_history',
         },

@@ -1,4 +1,7 @@
-﻿[Setup]
+﻿; 定义重复使用的变量
+#define EnvironmentKey "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+
+[Setup]
 ; 使用管理员运行
 ; PrivilegesRequired=admin
 PrivilegesRequired=poweruser
@@ -90,6 +93,27 @@ Source: "Base\Init\Analysis*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesn
 
 ; 注册表修改
 [Registry]
+; setx 设置的字符长度限制比较严格，所以使用注册表添加
+; 添加 JAVA_HOME 环境变量
+Root: HKLM; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "JAVA_HOME"; ValueData: "D:\KWM\Base\JDK";
+; 添加 JRE_HOME 环境变量
+Root: HKLM; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "JRE_HOME"; ValueData: "%JAVA_HOME%\jre";
+; 添加 CATALINA_HOME 环境变量
+Root: HKLM; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "CATALINA_HOME"; ValueData: "D:\KWM\Base\Tomcat";
+
+; 添加 JDK 到 Path 环境变量
+Root: HKLM; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};D:\KWM\Base\JDK\bin"; Check: NeedsAddPath('D:\KWM\Base\JDK\bin');
+; 添加 Tomcat 到 Path 环境变量
+Root: HKLM; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};D:\KWM\Base\Tomcat\bin"; Check: NeedsAddPath('D:\KWM\Base\Tomcat\bin');
+; 添加 PHP 到 Path 环境变量
+Root: HKLM; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};D:\KWM\Base\PHP"; Check: NeedsAddPath('D:\KWM\Base\PHP');
+; 添加 Apache 到 Path 环境变量
+Root: HKLM; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};D:\KWM\Base\Apache\bin"; Check: NeedsAddPath('D:\KWM\Base\Apache\bin');
+
+; 添加 Python 到 Path 环境变量；要加两次
+Root: HKLM; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};D:\KWM\Base\Python"; Check: NeedsAddPath('D:\KWM\Base\Python');
+; 添加 Python 到 Path 环境变量
+Root: HKLM; Subkey: "{#EnvironmentKey}"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};D:\KWM\Base\Python\Scripts"; Check: NeedsAddPath('D:\KWM\Base\Python\Scripts');
 
 
 ; 创建目录
@@ -100,7 +124,7 @@ Source: "Base\Init\Analysis*"; DestDir: "{app}\..\Base\Init"; Flags: onlyifdoesn
 ; Pascal 脚本
 [Code]
 const
-  EnvironmentKey = 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment';
+  EnvironmentKey = '{#EnvironmentKey}';
 
 // 检查 MSVC 是否安装，通过注册表中对应的项目来检查
 function NeedsMSVCInstall(Path: String):Boolean;

@@ -5,12 +5,52 @@
                   type="card"
                   :animated="false">
                 <TabPane name="build" label="构建配置" icon="settings">InnoSetup 构建配置</TabPane>
+                <TabPane name="doc" label="文档" icon="document-text">
+                    <div class="markdown-body" v-html="docContent"></div>
+                </TabPane>
                 <TabPane name="data" label="初始数据" icon="hammer">生成初始数据</TabPane>
-                <TabPane name="ddl" label="DDL 生成" icon="wrench">生成数据库 DDL</TabPane>
+                <TabPane name="ddl" label="DDL 生成" icon="wrench">
+                    <strong>
+                        生成数据库 DDL 步骤
+                    </strong>
+                    <ol class="list-origin">
+                        <li>生成 mysqldump 语句，配置好数据库信息，复制下面的 mysqldump 语句（已经排除无用的表）导出一个 DDL</li>
+                        <li>重置 <code>Auto_Increment</code>，一般使用编辑器中的正则替换 <code>AUTO_INCREMENT=(\d+)</code> 生成的 DDL 文件</li>
+                        <li>删除无用的 Event，主要是技术部用来同步旧版 KWM 系统的采集相关的数据（内容中含有 133 的）</li>
+                        <li>删除无用的 Procedure，主要是技术部用来同步旧版 KWM 系统的采集相关的数据(名称中含有 sync 的)</li>
+                        <li>视情况是否要删除表的分区语句，初始化数据库不需要分区，如果要删除可以使用 <code>/\*\!50500(\S*\s*\w+\S*\s*)+\*\/</code> 替换</li>
+                    </ol>
+
+                    <strong>使用 DDL 生成初始化 Data 目录</strong>
+                    <ol class="list-origin">
+                        <li>清空 MySQL 配置的 Data 目录</li>
+                        <li>使用命令 <code>mysqld --initialize-insecure</code> 初始化 Data 目录</li>
+                        <li>启动 MySQL， 可以先建立服务再启动，或者直接使用 mysqld 启动</li>
+                        <li>修改 root 密码，顺便创建 mmt_app 用户
+                            <ol class="list-origin">
+                                <li><code>mysql -uroot --skip-password</code></li>
+                                <li>创建 mmt_app 用户
+                                    <code>CREATE USER 'mmt_app'@'%' IDENTIFIED WITH mysql_native_password BY 'poms@db';</code>
+                                    授权
+                                    <code>GRANT ALL ON *.* TO 'mmt_app'@'%';</code></li>
+                                <li>
+                                    修改 root 用户
+                                    <code>ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'poms@db';</code>
+                                    <code>RENAME USER 'root'@'localhost' TO 'root'@'%';</code>
+                                </li>
+                                <li><code>FLUSH PRIVILEGES;</code></li>
+                            </ol>
+                        </li>
+                        <li>导入 DDL 建立表结构 <code>mysql -uroot -ppoms@db --default-character-set utf8 < /path/to/mymonitor_ddl.sql</code></li>
+                        <li>导入初始数据，复制初始数据中的 mysqldump 语句进行生成</li>
+                        <li>Data 目录到此初始化完成</li>
+                    </ol>
+
+                </TabPane>
             </Tabs>
         </card>
 
-        <div v-show="'build' === currentTab">
+        <div v-if="'build' === currentTab">
             <card dis-hover :bordered="false">
                 <strong slot="title">数据库可选配置</strong>
 
@@ -42,7 +82,7 @@
                 <div style="height: 280px; overflow: auto">
                     <iss-template ref="iss"
                                   :data="data.options"
-                                  style="width: 0;"/>
+                                  />
                 </div>
             </card>
 
@@ -56,19 +96,13 @@
                 <div style="height: 280px; overflow: auto">
                     <ini-template ref="ini"
                                   :data="data.options"
-                                  style="width: 0;"/>
+                                  />
                 </div>
             </card>
         </div>
 
-        <div v-show="'ddl' === currentTab">
-            <card dis-hover :bordered="false">
-                <pre style="overflow: auto">mysqldump -h192.168.1.116 -uroot -ppoms@db --single-transaction --set-gtid-purged=OFF --no-data --triggers --events --routines --databases mymonitor > ~/ddl.sql</pre>
-            </card>
-        </div>
-
         <!-- data -->
-        <div v-show="'data' === currentTab">
+        <div v-if="'data' === currentTab">
             <row :gutter="16" class="margin-top-16">
                 <i-col :span="12">
                     <card dis-hover :bordered="false">
@@ -147,6 +181,45 @@
                 </i-col>
             </row>
         </div>
+
+        <!-- structure -->
+        <div v-if="'ddl' === currentTab">
+            <card dis-hover :bordered="false">
+                <card dis-hover :bordered="false">
+                    <i-form label-position="top">
+                        <row :gutter="16">
+                            <i-col :span="12">
+                                <form-item label="源数据库 IP">
+                                    <i-input placeholder="192.168.1.116"
+                                             v-model="data.options.originIP"></i-input>
+                                </form-item>
+                            </i-col>
+                            <i-col :span="12">
+                                <form-item label="端口">
+                                    <i-input placeholder="3306"
+                                             v-model="data.options.originPort"></i-input>
+                                </form-item>
+                            </i-col>
+                        </row>
+                        <row :gutter="16">
+                            <i-col :span="12">
+                                <form-item label="用户名">
+                                    <i-input placeholder="mmt_app"
+                                             v-model="data.options.originUser"></i-input>
+                                </form-item>
+                            </i-col>
+                            <i-col :span="12">
+                                <form-item label="密码">
+                                    <i-input placeholder="poms@db"
+                                             v-model="data.options.originPassword"></i-input>
+                                </form-item>
+                            </i-col>
+                        </row>
+                    </i-form>
+                </card>
+                <pre style="word-wrap: break-word; white-space: pre-wrap;">mysqldump -h{{data.options.originIP}} -P{{data.options.originPort}} -u{{data.options.originUser}} -p{{data.options.originPassword}} --single-transaction --set-gtid-purged=OFF --ignore-table=mymonitor.{{ignoreTables.join(' --ignore-table=mymonitor.')}} --no-data --triggers --events --routines --databases mymonitor > ~/Desktop/mymonitor_ddl.sql</pre>
+            </card>
+        </div>
     </div>
 </template>
 
@@ -155,6 +228,8 @@
     import path from 'path'
     import {shell} from 'electron'
     import tables from '../../../static/build_resource/tables'
+    import ignoreTables from '../../../static/build_resource/ignore-tables'
+    import MarkdownIt from 'markdown-it'
 
     export default {
         name: "build-database",
@@ -171,9 +246,13 @@
             }
         },
         data() {
+            let md = new MarkdownIt()
+
             return {
                 currentTab: 'build',
+                docContent: md.render(fs.readFileSync(path.join(__static, 'doc', 'database-server.md')).toString()),
                 tables,
+                ignoreTables,
                 fullColumns: [
                     {
                         title: 'Table Name',
@@ -250,6 +329,13 @@
     }
 </script>
 
-<style>
-
+<style lang="less">
+    .list-origin {
+        list-style-type: decimal;
+        -webkit-margin-before: 1em;
+        -webkit-margin-after: 1em;
+        -webkit-margin-start: 0px;
+        -webkit-margin-end: 0px;
+        -webkit-padding-start: 40px;
+    }
 </style>
