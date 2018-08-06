@@ -130,22 +130,22 @@
                     {
                         title: '配置数据库服务器',
                         icon: 'soup-can',
-                        content: '数据库服务器配置',
+                        content: '数据库服务器配置，安装说明',
                     },
                     {
                         title: '配置分析服务器',
                         icon: 'ios-pulse',
-                        content: '分析服务器配置',
+                        content: '分析服务器配置，安装说明',
                     },
                     {
                         title: '配置应用服务器',
                         icon: 'monitor',
-                        content: '应用服务器配置',
+                        content: '应用服务器配置，安装说明',
                     },
                     {
-                        title: '配置 Fetch 服务器',
+                        title: '配置获取服务器',
                         icon: 'android-download',
-                        content: 'Fetch 服务器配置',
+                        content: '获取服务器配置，安装说明',
                     },
                     {
                         title: '运行构建',
@@ -183,7 +183,7 @@
                         iss: 'Application_Server_x64.iss',
                     },
                     {
-                        title: 'Fetch 服务器',
+                        title: '获取服务器',
                         desc: '等待构建',
                         icon: 'android-download',
                         status: 'wait',
@@ -298,6 +298,11 @@
 
         pre {
             padding: 1.2em 1.4em;
+            &>code {
+                white-space: pre;
+                padding: 0;
+                margin: 0;
+            }
         }
 
         .markdown-body {
