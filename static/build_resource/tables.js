@@ -65,9 +65,9 @@ export default {
         {
             name: 'operation_object',
         },
-        /*{
+        {
             name: 'privilege',
-        },*/
+        },
         {
             name: 'province',
         },
