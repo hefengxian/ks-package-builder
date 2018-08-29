@@ -37,8 +37,8 @@
                     </Button>
                 </div>
                 <div class="action-right">
-                    <Button :disabled="currentKey !== 6"
-                            v-if="currentKey < 7"
+                    <Button :disabled="currentKey !== 7"
+                            v-if="currentKey < 8"
                             @click="runBuild"
                             icon="play"
                             type="success">开始构建
@@ -63,6 +63,7 @@
     import BuildAnalysis from './component/BuildAnalysis'
     import BuildApplication from './component/BuildApplication'
     import BuildFetch from './component/BuildFetch'
+    import BuildThirdParty from './component/BuildThirdParty'
     import BuildRunning from './component/BuildRunning'
     import BuildResult from './component/BuildResult'
 
@@ -113,6 +114,7 @@
                     BuildAnalysis,
                     BuildApplication,
                     BuildFetch,
+                    BuildThirdParty,
                     BuildRunning,
                     BuildResult,
                 ],
@@ -146,6 +148,11 @@
                         title: '配置获取服务器',
                         icon: 'android-download',
                         content: '获取服务器配置，安装说明',
+                    },
+                    {
+                        title: '配置第三方工具',
+                        icon: 'android-open',
+                        content: '第三方工具配置，安装说明',
                     },
                     {
                         title: '运行构建',
@@ -210,6 +217,7 @@
             BuildAnalysis,
             BuildApplication,
             BuildFetch,
+            BuildThirdParty,
             BuildRunning,
             BuildResult,
         },

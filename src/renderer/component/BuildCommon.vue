@@ -52,7 +52,10 @@
 </template>
 
 <script>
-    import {remote} from 'electron'
+    import {remote, shell} from 'electron'
+    import fs from 'fs'
+    import path from 'path'
+    import MarkdownIt from 'markdown-it'
 
     export default {
         name: "build-root-path",
@@ -141,7 +144,9 @@
                 let path = remote.dialog.showOpenDialog({properties: ['openFile', 'openDirectory', 'multiSelections']})
                 this.data.options.rootPath = path[0]
             }
-        }
+        },
+        beforeDestroy() {
+        },
     }
 </script>
 
