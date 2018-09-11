@@ -196,6 +196,13 @@
                         status: 'wait',
                         iss: 'Fetch_Server_x64.iss',
                     },
+                    {
+                        title: '第三方工具',
+                        desc: '等待构建',
+                        icon: 'android-open',
+                        status: 'wait',
+                        iss: 'Third_Party_x64.iss',
+                    },
                 ],
             }
         },
