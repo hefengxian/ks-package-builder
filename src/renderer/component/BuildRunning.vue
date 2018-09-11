@@ -1,7 +1,7 @@
 <template>
     <card dis-hover
-          title="分析服务"
-          icon="ios-pulse"
+          title="运行构建"
+          icon="ios-play"
           :bordered="false">
         <div style="display: flex; flex-direction: row;">
             <div style="padding: 8px; flex: 0 0 200px;">
