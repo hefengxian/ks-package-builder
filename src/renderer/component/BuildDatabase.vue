@@ -121,6 +121,9 @@
                 <strong slot="title">结果</strong>
                 <pre style="overflow: auto"><template v-for="table in tables.full">mysqldump -h{{data.options.originIP}} -P{{data.options.originPort}} -u{{data.options.originUser}} -p{{data.options.originPassword}} --set-gtid-purged=OFF mymonitor --single-transaction --tables {{table.name}} | mysql -h{{data.options.destIP}} -P{{data.options.destPort}} -u{{data.options.destUser}} -p{{data.options.destPassword}} mymonitor <br/></template></pre>
                 <pre style="overflow: auto"><template v-for="table in tables.part">mysqldump -h{{data.options.originIP}} -P{{data.options.originPort}} -u{{data.options.originUser}} -p{{data.options.originPassword}} --set-gtid-purged=OFF mymonitor --single-transaction --tables {{table.name}} -w"{{table.where}}" | mysql -h{{data.options.destIP}} -P{{data.options.destPort}} -u{{data.options.destUser}} -p{{data.options.destPassword}} mymonitor <br/></template></pre>
+
+                <p>更新密码默认为 admin</p>
+                <pre style="overflow: auto">mysql -h{{data.options.destIP}} -P{{data.options.destPort}} -u{{data.options.destUser}} -p{{data.options.destPassword}} mymonitor --execute="UPDATE users SET User_Password='$2y$10$zWercUwjCkiiS3sNyvpMmePf9R2LLUftOKm9ipZzaU7/UYnab/yJS' WHERE User_Account='admin';"</pre>
             </card>
 
             <row :gutter="16">
