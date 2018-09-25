@@ -122,6 +122,18 @@ export default {
         {
             name: 'website_run_batch_file',
         },
+        {
+            name: 'website_tag',
+        },
+        {
+            name: 'website_tags',
+        },
+        {
+            name: 'dashboard_available_layout',
+        },
+        /*{
+            name: 'dashboard_client_layout',
+        },*/
     ],
     part: [
         {
