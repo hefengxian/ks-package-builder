@@ -153,12 +153,12 @@ end;
 ; 安装之后就运行的脚本
 
 ; 安装 MSVC 2017
-Filename: "{app}\..\Base\Other\VC2017_redist.x64.exe"; Flags: runascurrentuser; Check: NeedsMSVCInstall('SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64');
+Filename: "{app}\..\Base\Other\VC2017_redist.x64.exe"; Flags: runascurrentuser nowait; Check: NeedsMSVCInstall('SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64');
 ; 初始化分析服务器，安装各种依赖的服务添加 Path 变量等
 Filename: "{app}\..\Base\Init\Analysis_Server_Init.bat"; Flags: runascurrentuser;
 ; 运行 Apahce/Tomcat 服务监测程序
-Filename: "{app}\..\Base\Tomcat\Start_Tomcat_Monitor.bat";
-Filename: "{app}\..\Base\Apache\Start_Apache_Monitor.bat";
+; Filename: "{app}\..\Base\Tomcat\Start_Tomcat_Monitor.bat";
+; Filename: "{app}\..\Base\Apache\Start_Apache_Monitor.bat";
 
 [UninstallRun]
 ; Filename: "{app}\..\Base\Init\Analysis_Server_Init.bat"; Flags: runascurrentuser;
