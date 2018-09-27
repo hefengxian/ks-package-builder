@@ -110,9 +110,10 @@ Source: "Third_Party\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdir
 [Run]
 ; 安装之后就运行的脚本、程序
 Filename: "{app}\npp.Installer.x64.exe"; Flags: runascurrentuser;
+Filename: "{app}\7z-x64.exe"; Flags: runascurrentuser;
 Filename: "{app}\HeidiSQL_Setup.exe"; Flags: runascurrentuser;
 Filename: "{app}\sogou_pinyin.exe"; Flags: runascurrentuser;
-Filename: "{app}\SumatraPDF-install.exe"; Flags: runascurrentuser;
+; Filename: "{app}\SumatraPDF-install.exe"; Flags: runascurrentuser;
 
 
 [UninstallRun]
