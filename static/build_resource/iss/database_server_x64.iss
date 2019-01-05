@@ -10,7 +10,7 @@
 PrivilegesRequired=poweruser
 
 ; 应用名称
-AppName=Database_Server
+AppName={cm:AppName}
 
 ; 应用版本
 AppVersion={{version}}
@@ -22,7 +22,7 @@ ShowLanguageDialog=yes
 UsePreviousLanguage=no
 
 ; 带版本的名字
-AppVerName=Database_Server_{{version}}
+AppVerName={cm:AppName} {{version}}
 
 ; 发布者
 AppPublisher={{publisher}}
@@ -67,6 +67,13 @@ OutputDir={{rootPath}}\Output\{{currentDate}}
 Name: "en"; MessagesFile: "compiler:Default.isl"
 ; 简体中文配置
 Name: "cn_simplify"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
+
+
+; 自定义消息配置
+[CustomMessages]
+en.AppName=Database Server
+
+cn_simplify.AppName=数据库服务器
 
 
 ; 文件映射
